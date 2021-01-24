@@ -1,0 +1,39 @@
+﻿@using TelerikUsers.Models
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+@(Html.Kendo().Grid<User>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(u => u.Id).Filterable(false);
+            columns.Bound(u => u.Name);
+            columns.Bound(u => u.Views);
+            columns.Command(command =>
+            {
+                command.Edit();
+                command.Destroy();
+            }).Title("Commands");
+        })
+        .Pageable()
+        .Sortable()
+        .Scrollable()
+        .Filterable()
+        .ToolBar(toolBar => toolBar.Create())
+        .Editable(edit => edit.Mode(GridEditMode.InLine))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(user => user.Id);
+                model.Field(user => user.Id).Editable(false);
+            })
+            .PageSize(20)
+            .Create(create => create.Action("CreateUser", "Users"))
+            .Read(read => read.Action("GetUsers", "Users"))
+            .Update(update => update.Action("UpdateUser", "Users"))
+            .Destroy(destroy => destroy.Action("RemoveUser", "Users"))
+    )
+)
